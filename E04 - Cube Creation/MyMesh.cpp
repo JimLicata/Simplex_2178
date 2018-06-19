@@ -16,8 +16,26 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 		Calculate a_nSubdivisions number of points around a center point in a radial manner
 		then call the AddTri function to generate a_nSubdivision number of faces
 	*/
+	const float pi = 3.14159265359;
+	float step = ((pi * 2) / a_nSubdivisions);
+	float x, y, x2, y2, curr = 0;
 
-	// Adding information about color
+	for (size_t i = 0; i < a_nSubdivisions; i++)
+	{
+		x = sin(curr + step) * a_fRadius;
+		y = cos(curr + step) * a_fRadius;
+
+		vector3 point1(x, y, 0.0f);
+
+		x2 = sin(curr + (step * 2)) * a_fRadius;
+		y2 = cos(curr + (step * 2)) * a_fRadius;
+
+		vector3 point2(x2, y2, 0.0f);
+
+		AddTri(point1, vector3(0, 0, 0), point2);
+
+		curr += step;
+	}
 	CompleteMesh(a_v3Color);
 	CompileOpenGL3X();
 }
@@ -175,7 +193,7 @@ void MyMesh::AddTri(vector3 a_vBottomLeft, vector3 a_vBottomRight, vector3 a_vTo
 {
 	//C
 	//| \
-		//A--B
+	//A--B
 //This will make the triangle A->B->C 
 	AddVertexPosition(a_vBottomLeft);
 	AddVertexPosition(a_vBottomRight);
@@ -426,11 +444,7 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Init();
 
 	// Replace this with your code
-	Mesh* pMesh = new Mesh();
-	pMesh->GenerateSphere(a_fRadius, a_nSubdivisions, a_v3Color);
-	m_lVertexPos = pMesh->GetVertexList();
-	m_uVertexCount = m_lVertexPos.size();
-	SafeDelete(pMesh);
+	
 	// -------------------------------
 
 	// Adding information about color
