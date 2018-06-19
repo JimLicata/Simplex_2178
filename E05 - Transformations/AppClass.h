@@ -9,6 +9,7 @@ Date: 2017/05
 
 #include "ControllerConfiguration.h"
 #include "imgui\ImGuiObject.h"
+#include <vector>
 
 #include "MyMesh.h"
 
@@ -16,6 +17,9 @@ class Application
 {
 	MyMesh* m_pMesh = nullptr;
 	String m_sProgrammer = "James Licata - jxl2489@rit.edu";
+	int m_uMeshCount = 0;
+	std::vector<MyMesh*> m_pMeshList;
+	bool init = false;
 
 private:
 	static ImGuiObject gui; //GUI object
