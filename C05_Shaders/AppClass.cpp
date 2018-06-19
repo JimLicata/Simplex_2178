@@ -4,6 +4,7 @@ AppClass::AppClass(std::string a_windowName) : m_sWindowName(a_windowName) {}
 AppClass::AppClass(AppClass const& input) {}
 AppClass& AppClass::operator=(AppClass const& input) { return *this; }
 AppClass::~AppClass(void){ Release(); }
+bool compColor = false;
 void AppClass::Run(void)
 {
 	//Initialize the system with the fields recollected by the constructor
@@ -106,16 +107,85 @@ void AppClass::InitVariables(void)
 void AppClass::ProcessKeyboard(sf::Event a_event)
 {
 	if (a_event.key.code == sf::Keyboard::Key::Escape)//Event says I pressed the Escape key
-		m_bRunning = false;
+		m_bRunning = false;	
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) //I am currently pressing the Num1 (not the same as above)
 		m_v3Color = glm::vec3(1.0f, 0.0f, 0.0f);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
 		m_v3Color = glm::vec3(0.0f, 1.0f, 0.0f);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
 		m_v3Color = glm::vec3(0.0f, 0.0f, 1.0f);
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4 )&& compColor == false) // complimentary colors by pressing Num4
+	{
+		compColor = !compColor;
+		std::vector<glm::vec3> lVertex;
+		//vertex 1
+		lVertex.push_back(glm::vec3(-1.0f, -1.0f, 0.0f)); //position
+		lVertex.push_back(glm::vec3(0.0f, 1.0f, 1.0f)); //color
+														//vertex 2
+		lVertex.push_back(glm::vec3(1.0f, -1.0f, 0.0f)); //position
+		lVertex.push_back(glm::vec3(1.0f, 0.0f, 1.0f)); //color
+														//vertex 3
+		lVertex.push_back(glm::vec3(0.0f, 1.0f, 0.0f)); //position
+		lVertex.push_back(glm::vec3(1.0f, 1.0f, 0.0f)); //color
+
+		glGenVertexArrays(1, &m_uVAO);//Generate vertex array object
+		glGenBuffers(1, &m_uVBO);//Generate Vertex Buffered Object
+
+		glBindVertexArray(m_uVAO);//Bind the VAO
+		glBindBuffer(GL_ARRAY_BUFFER, m_uVBO);//Bind the VBO
+
+											  //Generate space for the VBO (vertex count times size of vec3)
+		glBufferData(GL_ARRAY_BUFFER, lVertex.size() * sizeof(glm::vec3), &lVertex[0], GL_STATIC_DRAW);
+
+		//count the attributes
+		int attributeCount = 2;
+
+		// Position attribute
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, attributeCount * sizeof(glm::vec3), (GLvoid*)0);
+
+		// Color attribute
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, attributeCount * sizeof(glm::vec3), (GLvoid*)(1 * sizeof(glm::vec3)));
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4) && compColor == true) // normal colors by pressing Num4 again
+	{
+		compColor = !compColor;
+		std::vector<glm::vec3> lVertex;
+		//vertex 1
+		lVertex.push_back(glm::vec3(-1.0f, -1.0f, 0.0f)); //position
+		lVertex.push_back(glm::vec3(1.0f, 0.0f, 0.0f)); //color
+														//vertex 2
+		lVertex.push_back(glm::vec3(1.0f, -1.0f, 0.0f)); //position
+		lVertex.push_back(glm::vec3(0.0f, 1.0f, 0.0f)); //color
+														//vertex 3
+		lVertex.push_back(glm::vec3(0.0f, 1.0f, 0.0f)); //position
+		lVertex.push_back(glm::vec3(0.0f, 0.0f, 1.0f)); //color
+
+		glGenVertexArrays(1, &m_uVAO);//Generate vertex array object
+		glGenBuffers(1, &m_uVBO);//Generate Vertex Buffered Object
+
+		glBindVertexArray(m_uVAO);//Bind the VAO
+		glBindBuffer(GL_ARRAY_BUFFER, m_uVBO);//Bind the VBO
+
+											  //Generate space for the VBO (vertex count times size of vec3)
+		glBufferData(GL_ARRAY_BUFFER, lVertex.size() * sizeof(glm::vec3), &lVertex[0], GL_STATIC_DRAW);
+
+		//count the attributes
+		int attributeCount = 2;
+
+		// Position attribute
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, attributeCount * sizeof(glm::vec3), (GLvoid*)0);
+
+		// Color attribute
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, attributeCount * sizeof(glm::vec3), (GLvoid*)(1 * sizeof(glm::vec3)));
+	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0))
 		m_v3Color = glm::vec3(-1.0f, -1.0f, -1.0f);
 }
+
 void AppClass::Display(void)
 {
 	// clear the buffers
