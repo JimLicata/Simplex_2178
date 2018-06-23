@@ -22,13 +22,13 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 	for (size_t i = 0; i < a_nSubdivisions; i++)
 	{
-		x = sin(curr + step) * a_fRadius;
-		y = cos(curr + step) * a_fRadius;
+		x = sin(curr) * a_fRadius;
+		y = cos(curr) * a_fRadius;
 
 		vector3 point1(x, y, 0.0f);
 
-		x2 = sin(curr + (step * 2)) * a_fRadius;
-		y2 = cos(curr + (step * 2)) * a_fRadius;
+		x2 = sin(curr + step) * a_fRadius;
+		y2 = cos(curr + step) * a_fRadius;
 
 		vector3 point2(x2, y2, 0.0f);
 

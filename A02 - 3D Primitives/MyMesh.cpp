@@ -276,7 +276,27 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	const float pi = 3.14159265359;
+	float step = ((pi * 2) / a_nSubdivisions);
+	float x, y, x2, y2, curr = 0;
+
+	for (size_t i = 0; i < a_nSubdivisions; i++)
+	{
+		x = sin(curr) * a_fRadius;
+		y = cos(curr) * a_fRadius;
+
+		vector3 point1(x, y, 0.0f);
+
+		x2 = sin(curr + step) * a_fRadius;
+		y2 = cos(curr + step) * a_fRadius;
+
+		vector3 point2(x2, y2, 0.0f);
+
+		AddTri(point1, vector3(0, 0, a_fHeight), point2);
+		AddTri(point2, vector3(0, 0, 0), point1);
+
+		curr += step;
+	}
 	// -------------------------------
 
 	// Adding information about color
@@ -300,7 +320,31 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	const float pi = 3.14159265359;
+	float step = ((pi * 2) / a_nSubdivisions);
+	float x, y, x2, y2, curr = 0;
+
+	for (size_t i = 0; i < a_nSubdivisions; i++)
+	{
+		x = sin(curr) * a_fRadius;
+		y = cos(curr) * a_fRadius;
+
+		vector3 point1(x, y, a_fHeight/2);
+
+		x2 = sin(curr + step) * a_fRadius;
+		y2 = cos(curr + step) * a_fRadius;
+
+		vector3 point2(x2, y2, a_fHeight/2);
+		vector3 point3(x, y, -a_fHeight/2);
+		vector3 point4(x2, y2, -a_fHeight/2);
+
+		AddTri(point1, vector3(0, 0, a_fHeight/2), point2);
+		AddTri(point4, vector3(0, 0, -a_fHeight/2), point3);
+
+		AddQuad(point1,point2, point3, point4);
+
+		curr += step;
+	}
 	// -------------------------------
 
 	// Adding information about color
@@ -330,7 +374,48 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	const float pi = 3.14159265359;
+	float step = ((pi * 2) / a_nSubdivisions);
+	float x, y, x2, y2, curr = 0;
+
+	for (size_t i = 0; i < a_nSubdivisions; i++)
+	{
+		x = sin(curr) * a_fOuterRadius;
+		y = cos(curr) * a_fOuterRadius;
+
+		vector3 point1(x, y, a_fHeight / 2);
+
+		x2 = sin(curr + step) * a_fOuterRadius;
+		y2 = cos(curr + step) * a_fOuterRadius;
+
+		vector3 point2(x2, y2, a_fHeight / 2);
+
+		vector3 point3(x, y, -a_fHeight / 2);
+		vector3 point4(x2, y2, -a_fHeight / 2);
+
+		AddQuad(point1, point2, point3, point4); // outside
+
+		x = sin(curr) * a_fInnerRadius;
+		y = cos(curr) * a_fInnerRadius;
+
+		vector3 point5(x, y, a_fHeight / 2);
+
+		x2 = sin(curr + step) * a_fInnerRadius;
+		y2 = cos(curr + step) * a_fInnerRadius;
+
+		vector3 point6(x2, y2, a_fHeight / 2);
+
+		vector3 point7(x, y, -a_fHeight / 2);
+		vector3 point8(x2, y2, -a_fHeight / 2);
+
+		AddQuad(point7, point8, point5, point6); // inside
+
+		AddQuad(point5, point6, point1, point2); // bottom ring
+
+		AddQuad(point3, point4, point7, point8); // top ring
+
+		curr += step;
+	}
 	// -------------------------------
 
 	// Adding information about color
@@ -387,7 +472,46 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	const float pi = 3.14159265359;
+	float step = ((pi * 2) / a_nSubdivisions);
+	float x, y, z, x2, y2, z2, x3, y3, z3, x4, y4, z4, vert = 0;
+	float hori = 0;
+
+	for (uint i = 0; i < a_nSubdivisions ; i++)
+	{
+		for (uint j = 0; j < a_nSubdivisions; j++)
+		{
+			x = sin(hori) * cos(vert) * a_fRadius;
+			y = sin(hori) * sin(vert) * a_fRadius;
+			z = cos(hori) * a_fRadius;
+
+			vector3 point1(x, y, z);
+
+			x2 = sin(hori) * cos(vert + step) * a_fRadius;
+			y2 = sin(hori) * sin(vert + step) * a_fRadius;
+			z2 = cos(hori) * a_fRadius;
+			
+			vector3 point2(x2, y2, z2);
+
+			x3 = sin(hori + step) * cos(vert) * a_fRadius;
+			y3 = sin(hori + step) * sin(vert) * a_fRadius;
+			z3 = cos(hori + step) * a_fRadius;
+
+			vector3 point3(x3, y3, z3);
+
+			x4 = sin(hori + step) * cos(vert + step) * a_fRadius;
+			y4 = sin(hori + step) * sin(vert + step) * a_fRadius;
+			z4 = cos(hori + step) * a_fRadius;
+
+			vector3 point4(x4, y4, z4);
+
+			AddQuad(point1, point2, point3, point4);
+			vert += step;
+		}
+		hori += step;
+		vert = 0;
+	}
+
 	// -------------------------------
 
 	// Adding information about color
