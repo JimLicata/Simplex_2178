@@ -448,7 +448,7 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 
 	// Replace this with your code
 	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	// ------------------------------
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
