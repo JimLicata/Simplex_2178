@@ -22,6 +22,7 @@ class Application
 	std::vector<uint> m_shapeList; //shape index for circles
 	std::vector<vector3> m_stopsList; // list for storing stops
 	std::vector<matrix4> m_circleList; // list for storing circles
+	std::vector<vector3> m_startList; // list for storing start locations
 	String m_sProgrammer = "James Licata - jxl2489@rit.edu";
 	
 private:
@@ -46,6 +47,8 @@ private:
 	CameraManager* m_pCameraMngr = nullptr; //Singleton for the camera manager
 	ControllerInput* m_pController[8]; //Controller
 	uint m_uActCont = 0; //Active Controller of the Application
+	bool reset = false;
+	uint route = 0;
 
 public:
 #pragma region Constructor / Run / Destructor

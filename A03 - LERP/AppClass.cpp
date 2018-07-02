@@ -56,11 +56,31 @@ void Application::InitVariables(void)
 			curr += step;
 		}
 		radius += 0.5f;
+		m_stopsList.push_back(ZERO_V3); // create a reset vector
 	}
 
-	
+	// make beginning vectors
+	uint addNum = 3;
+	uint prevNum = 0;
+	uint currNum = 0;
+	for (uint i = 0; i < m_uOrbits; ++i)
+	{
+		if (i == 0)
+		{
+			m_startList.push_back(m_stopsList[0]);
+		}
 
-	
+		else
+		{
+			currNum = addNum + prevNum + 1;
+			int value = currNum;
+			prevNum = currNum;
+			addNum++;
+			m_startList.push_back(m_stopsList[value]);
+		}
+	}
+
+	// push back circles
 	for (uint i = 0; i < m_uOrbits; i++)
 	{
 		matrix4 m4Model = matrix4(0.0f);
@@ -91,17 +111,17 @@ void Application::Display(void)
 		The following offset will orient the orbits as in the demo, start without it to make your life easier.
 	*/
 	m4Offset = glm::rotate(IDENTITY_M4, 1.5708f, AXIS_Z);
-	uint addNum = 3;
+	uint addNum = 4;
 	uint prevNum = 0;
 	uint currNum = 0;
+	
 	for (uint i = 0; i < m_uOrbits; ++i)
 	{
 		//calculate the current position
-		vector3 v3CurrentPos = ZERO_V3;
-		vector3 v3StartPos = ZERO_V3;
+		static vector3 v3CurrentPos = ZERO_V3;
+		static vector3 v3StartPos = ZERO_V3;
 
-		static uint route = 0;
-
+		
 		if (i == 0)
 		{
 			v3StartPos = m_stopsList[0];
@@ -110,7 +130,6 @@ void Application::Display(void)
 		else
 		{
 			currNum = addNum + prevNum;
-			route = currNum;
 			prevNum = currNum;
 			addNum++;
 		}
@@ -122,13 +141,31 @@ void Application::Display(void)
 
 		static vector3 v3Start, v3End;
 		
-		
+		if (reset == true)
+		{
+			v3Start = m_startList[i];
+			reset = false;
+			
+		}
 
-		v3Start = m_stopsList[route ];
-		if(currNum == 0)
-			v3End = m_stopsList[(route + 1) % 3];
-		else 
-			v3End = m_stopsList[(route + 1) % (i + route + 2)];
+		else
+		{
+			v3Start = m_stopsList[route + currNum];
+		}
+			
+		if (m_stopsList[(route + 1 + currNum) % m_stopsList.size()] == ZERO_V3) // if it equals the reset vector
+		{
+			// take it back to start
+			v3End = m_startList[i];
+			reset = true;
+
+		}
+
+		else // otherwise proceed as normal
+		{
+			v3End = m_stopsList[(route + 1 + currNum) % m_stopsList.size()];
+		}
+
 
 		//LERP
 		float fTimeBetweenStops = 1.0f;
@@ -139,15 +176,11 @@ void Application::Display(void)
 
 		if (fPercentage >= 1.0f)
 		{
+
 			route++;
+
 			fTimer = m_pSystem->GetDeltaTime(uClock);
-			if (currNum == 0)
-				route %= 3;
-			else
-			{
-				route %= (i + route + 3);
-			}
-				
+			route %= (i + 3);
 		}
 
 	}
