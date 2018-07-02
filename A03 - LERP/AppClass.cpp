@@ -144,8 +144,7 @@ void Application::Display(void)
 		if (reset == true)
 		{
 			v3Start = m_startList[i];
-			reset = false;
-			
+			reset = false;		
 		}
 
 		else
@@ -158,7 +157,6 @@ void Application::Display(void)
 			// take it back to start
 			v3End = m_startList[i];
 			reset = true;
-
 		}
 
 		else // otherwise proceed as normal
