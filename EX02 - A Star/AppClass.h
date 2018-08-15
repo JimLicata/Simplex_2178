@@ -10,17 +10,36 @@ Date: 2017/05
 #include "ControllerConfiguration.h"
 #include "imgui\ImGuiObject.h"
 #include <vector>
+#include "MyRigidBody.h"
+#include "Node.h"
 
 #include "MyMesh.h"
 
 class Application
 {
+	vector3 m_v3Creeper; //position of the creeper
+	vector3 m_v3Steve; //position of the steve
+	Model* m_pPipe = nullptr; //model to display
+	Model* m_pSteve = nullptr; //model to display
+
+	quaternion m_qSteve; //quaterion for steve
+	quaternion m_qCreeper; //quaterion for the creeper
+
+	MyRigidBody* m_pPipeRB = nullptr; //Rigid Body of the model
+	MyRigidBody* m_pSteveRB = nullptr; //Rigid Body of the model
 	MyMesh* m_pMesh = nullptr;
 	String m_sProgrammer = "James Licata - jxl2489@rit.edu";
-	int m_uMeshCount = 0;
+	int m_uMeshCount1 = 0;
+	int m_uWallCount1 = 0;
 	std::vector<MyMesh*> m_pMeshList1;
+	std::vector<MyMesh*> m_pWallList1;
 	bool init = false;
+	bool first = true;
 
+	std::vector<vector3> m_stopsList;
+
+	
+	
 private:
 	static ImGuiObject gui; //GUI object
 
@@ -42,6 +61,21 @@ private:
 	Simplex::CameraManager* m_pCameraMngr = nullptr; //Singleton for the camera manager
 	ControllerInput* m_pController[8]; //Controller
 	uint m_uActCont = 0; //Active Controller of the Application
+
+	std::vector<Node*> nodes;
+	std::vector <Node*>* openList;
+	std::vector <Node*>* closedList;
+	std::vector <Node*>* adjacentNodes;
+	std::vector <Node*>* path;
+	Node* endNode;
+	Node* startNode;
+	Node*currNode;
+	int loc;
+	int priority;
+	int** adjMatrix;
+	int height, width, endPosX, endPosY, startPosX, startPosY, gScore;
+	int nodeCounter;
+	int nodesCheck;
 
 public:
 #pragma region Constructor / Run / Destructor
@@ -153,6 +187,12 @@ private:
 	OUTPUT: ---
 	*/
 	void ReleaseControllers(void);
+	void AStar(void);
+	bool Contains(std::vector<Node*>* list, Node * n);
+	void GetUnvisitedNeighbor(Node * n);
+	int CalcH(Node* n);
+	void SetNode();
+	void SetEdges();
 #pragma endregion
 
 #pragma region Application Controls

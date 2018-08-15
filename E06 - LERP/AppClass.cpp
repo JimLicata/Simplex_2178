@@ -8,7 +8,7 @@ void Application::InitVariables(void)
 	m_pCameraMngr->SetPositionTargetAndUp(vector3(5.0f,3.0f,15.0f), ZERO_V3, AXIS_Y);
 
 	m_pModel = new Simplex::Model();
-	m_pModel->Load("Sorted\\WallEye.bto");
+	m_pModel->Load("Sorted\\WarpPipe.bto");
 	
 	m_stopsList.push_back(vector3(-4.0f, -2.0f, 5.0f));
 	m_stopsList.push_back(vector3(1.0f, -2.0f, 5.0f));
@@ -54,10 +54,6 @@ void Application::Display(void)
 	//calculate the current position
 	vector3 v3CurrentPos;
 	
-
-
-
-
 	//your code goes here
 	v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
 	vector3 v3Start, v3End;
